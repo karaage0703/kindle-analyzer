@@ -15,6 +15,7 @@ Kindleの蔵書情報を分析・可視化するためのツールです。
 - コンテンツタグごとの書籍数の分析
 - 月ごとの購入書籍数の分析
 - 分析結果の可視化（グラフの生成）
+- マークダウン形式での書籍リスト出力
 - Jupyter Notebookによる対話的な分析環境
 
 ## 環境のセットアップ
@@ -42,9 +43,7 @@ uv venv
 3. 仮想環境をアクティベート
 
 ```bash
-source .venv/bin/activate  # Linuxの場合
-# または
-.venv\Scripts\activate     # Windowsの場合
+source .venv/bin/activate
 ```
 
 4. 依存パッケージをインストール
@@ -92,6 +91,31 @@ kindle-analyzer --output-dir ./my_analysis
 - `--monthly`, `-m`: 月ごとの購入書籍数を分析
 - `--all`: すべての分析を実行
 
+### マークダウン形式での書籍リスト出力
+
+書籍リストをマークダウン形式で出力するには、以下のコマンドを使用します：
+
+```bash
+# 基本的な使用方法
+python -m src.kindle_analyzer.markdown_exporter --db-path data/BookData.sqlite --output output/kindle_books.md
+
+# 著者名でソートして上位10冊のみを出力
+python -m src.kindle_analyzer.markdown_exporter --db-path data/BookData.sqlite --output output/kindle_books_by_author.md --sort-by author --ascending --limit 10
+
+# 購入日の新しい順にソート（デフォルト）
+python -m src.kindle_analyzer.markdown_exporter --db-path data/BookData.sqlite --output output/kindle_books_recent.md
+```
+
+オプション：
+- `--db-path`, `-d`: SQLiteデータベースファイルのパス（必須）
+- `--output`, `-o`: 出力ファイルのパス（デフォルト: kindle_books.md）
+- `--sort-by`, `-s`: ソートするカラム名（デフォルト: purchase_date）
+  - 選択肢: title_from_metadata, author, publisher, purchase_date, publication_date
+- `--ascending`, `-a`: 昇順にソートする（デフォルト: 降順）
+- `--limit`, `-l`: 出力する書籍数の上限
+
+出力されるマークダウンファイルには、各書籍のタイトル、著者、出版社、購入日、出版日、タグ（存在する場合）が含まれます。
+
 ### Jupyter Notebookの使用
 
 対話的なデータ分析を行うには、Jupyter Notebookを使用します。
@@ -102,39 +126,51 @@ jupyter notebook notebooks/kindle_analysis.ipynb
 
 ## 分析例
 
+### マークダウン形式での書籍リスト出力例
+
+```markdown
+# Kindle蔵書リスト
+
+合計: 2543冊
+
+## 1. 考えの育て方: 知的生産のデジタルカード法 (Knowledge Walkers Books)
+
+- **著者**: 倉下忠憲
+- **出版社**: 不明
+- **購入日**: 2025-05-03
+- **出版日**: 2023-10-25
+
+---
+
+## 2. Obsidianで"育てる"最強ノート術 —— あらゆる情報をつなげて整理しよう
+
+- **著者**: 増井 敏克
+- **出版社**: 技術評論社
+- **購入日**: 2025-04-29
+- **出版日**: 2023-10-18
+
+---
+```
+
 ### 年ごとの書籍購入数
 
-![年ごとの書籍購入数](docs/images/yearly_counts.png)
+![年ごとの書籍購入数](output/yearly_counts.png)
 
 ### 出版社ごとの書籍数
 
-![出版社ごとの書籍数](docs/images/publisher_counts.png)
+![出版社ごとの書籍数](output/publisher_counts.png)
 
 ### 著者ごとの書籍数
 
-![著者ごとの書籍数](docs/images/author_counts.png)
+![著者ごとの書籍数](output/author_counts.png)
 
 ### コンテンツタグごとの書籍数
 
-![コンテンツタグごとの書籍数](docs/images/tag_counts.png)
+![コンテンツタグごとの書籍数](output/tag_counts.png)
 
 ### 月ごとの購入書籍数
 
-![月ごとの購入書籍数](docs/images/monthly_counts.png)
-
-## 開発
-
-### テストの実行
-
-```bash
-pytest
-```
-
-### パッケージのビルド
-
-```bash
-python -m build
-```
+![月ごとの購入書籍数](output/monthly_counts.png)
 
 ## 注意事項
 
@@ -149,3 +185,4 @@ python -m build
 
 ## ライセンス
 
+このプロジェクトはMITライセンスの下で公開されています。詳細は[LICENSE](LICENSE)ファイルを参照してください。
