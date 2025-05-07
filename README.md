@@ -24,6 +24,10 @@ Kindleの蔵書情報を分析・可視化するためのツールです。
 
 - Python 3.8以上
 - [uv](https://github.com/astral-sh/uv)（高速なPythonパッケージマネージャー）
+- tkinter（グラフ表示用、インストールしない場合は一部機能に制限あり）
+  - macOS: `brew install python-tk`
+  - Ubuntu: `sudo apt-get install python3-tk`
+  - Windows: 通常はPythonインストール時に含まれています。含まれていない場合はPythonインストーラーを再実行して「tcl/tk and IDLE」オプションを選択してください。
 
 ### セットアップ手順
 
